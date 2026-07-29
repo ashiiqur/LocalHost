@@ -14,7 +14,7 @@
     font-family:Poppins,sans-serif;
 }
 html,body{
-    height:100%;
+    min-height:100vh; 
 }
 body{
     background:#111;
@@ -66,6 +66,10 @@ header p{
 .gallery{
     width:90%;
     margin:40px auto;
+    
+    /* <-- CHANGE THIS NUMBER TO CONTROL THE BOTTOM GAP --> */
+    padding-bottom: 40px; 
+    
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
     gap:22px;
