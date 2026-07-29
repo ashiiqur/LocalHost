@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <title>Visual Art Gallery</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
 *{
     margin:0;
@@ -15,19 +13,34 @@
     box-sizing:border-box;
     font-family:Poppins,sans-serif;
 }
-
+html,body{
+    height:100%;
+}
 body{
     background:#111;
     color:#fff;
+    position:relative;
+    overflow-x:hidden;
 }
-
+/* Falling shapes background */
+#bg-canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+}
+header, .gallery{
+    position:relative;
+    z-index:1;
+}
 /* Header */
-
 header{
     text-align:center;
     padding:40px 20px;
 }
-
 header h1{
     font-size:48px;
     font-weight:700;
@@ -35,26 +48,21 @@ header h1{
     transition:.4s;
     cursor:pointer;
 }
-
 header h1:hover{
     color:#00ff99;
     text-shadow:0 0 20px #00ff99;
 }
-
 header p{
     color:#cfcfcf;
     margin-bottom:20px;
 }
-
 .time{
     color:#00ff99;
     font-weight:600;
     letter-spacing:2px;
     font-size:15px;
 }
-
 /* Gallery */
-
 .gallery{
     width:90%;
     margin:40px auto;
@@ -62,9 +70,7 @@ header p{
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
     gap:22px;
 }
-
 /* Card */
-
 .card{
     position:relative;
     overflow:hidden;
@@ -72,27 +78,24 @@ header p{
     cursor:pointer;
     background:#222;
     transition:.35s;
+    aspect-ratio:1/1;
 }
-
 .card img{
     width:100%;
-    height:320px;
+    height:100%;
     object-fit:cover;
     transition:.6s;
+    display:block;
 }
-
 .card:hover img{
     transform:scale(1.12);
     filter:brightness(.65);
 }
-
 .card:hover{
     transform:translateY(-8px);
     box-shadow:0 15px 40px rgba(0,255,153,.25);
 }
-
 /* Overlay */
-
 .overlay{
     position:absolute;
     left:0;
@@ -103,62 +106,49 @@ header p{
     transform:translateY(100%);
     transition:.45s;
 }
-
 .card:hover .overlay{
     transform:translateY(0);
 }
-
 .overlay h3{
     font-size:24px;
     margin-bottom:8px;
 }
-
 .overlay p{
     color:#ddd;
     font-size:14px;
 }
-
 .overlay span{
     display:inline-block;
     margin-top:12px;
     color:#00ff99;
     font-size:13px;
 }
-
 /* Responsive */
-
 @media(max-width:700px){
-
 header h1{
     font-size:34px;
 }
-
 .gallery{
     width:95%;
 }
-
-.card img{
-    height:260px;
 }
-
+@media (prefers-reduced-motion: reduce){
+    #bg-canvas{
+        display:none;
+    }
 }
 </style>
 </head>
-
 <body>
-
+<canvas id="bg-canvas"></canvas>
 <header>
 <h1>Visual Art Gallery</h1>
 <p>Digital creations and photography.</p>
-
 <div class="time">
 GALLERY UPDATED: Jul 30, 2026 • 10:20
 </div>
-
 </header>
-
 <div class="gallery">
-
 <div class="card">
 <img src="images/ashiqur.jpg" alt="">
 <div class="overlay">
@@ -167,7 +157,6 @@ GALLERY UPDATED: Jul 30, 2026 • 10:20
 <span>UPLOAD: Jul 20, 2026</span>
 </div>
 </div>
-
 <div class="card">
 <img src="images/Home.jpg" alt="">
 <div class="overlay">
@@ -176,7 +165,6 @@ GALLERY UPDATED: Jul 30, 2026 • 10:20
 <span>UPLOAD: Jul 22, 2026</span>
 </div>
 </div>
-
 <div class="card">
 <img src="images/photo3.jpg" alt="">
 <div class="overlay">
@@ -185,7 +173,6 @@ GALLERY UPDATED: Jul 30, 2026 • 10:20
 <span>UPLOAD: Jul 24, 2026</span>
 </div>
 </div>
-
 <div class="card">
 <img src="images/photo4.jpg" alt="">
 <div class="overlay">
@@ -194,7 +181,6 @@ GALLERY UPDATED: Jul 30, 2026 • 10:20
 <span>UPLOAD: Jul 25, 2026</span>
 </div>
 </div>
-
 <div class="card">
 <img src="images/photo5.jpg" alt="">
 <div class="overlay">
@@ -203,7 +189,6 @@ GALLERY UPDATED: Jul 30, 2026 • 10:20
 <span>UPLOAD: Jul 27, 2026</span>
 </div>
 </div>
-
 <div class="card">
 <img src="images/photo6.jpg" alt="">
 <div class="overlay">
@@ -212,8 +197,118 @@ GALLERY UPDATED: Jul 30, 2026 • 10:20
 <span>UPLOAD: Jul 29, 2026</span>
 </div>
 </div>
-
 </div>
 
+<script>
+(function(){
+    var canvas = document.getElementById('bg-canvas');
+    var ctx = canvas.getContext('2d');
+    var W, H, DPR;
+
+    function resize(){
+        DPR = window.devicePixelRatio || 1;
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W * DPR;
+        canvas.height = H * DPR;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx.setTransform(DPR,0,0,DPR,0,0);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    var colors = ['#00ff99', '#00cc7a', '#ffffff'];
+    var types = ['square','triangle','circle','hexagon'];
+    var shapeCount = Math.max(18, Math.floor(W / 60));
+
+    function randRange(a,b){ return a + Math.random()*(b-a); }
+
+    function makeShape(){
+        return {
+            x: randRange(0, W),
+            y: randRange(-H, 0),
+            size: randRange(10, 28),
+            speed: randRange(0.4, 1.6),
+            drift: randRange(-0.4, 0.4),
+            rotation: randRange(0, Math.PI*2),
+            rotSpeed: randRange(-0.01, 0.01),
+            type: types[Math.floor(Math.random()*types.length)],
+            color: colors[Math.floor(Math.random()*colors.length)],
+            alpha: randRange(0.12, 0.35)
+        };
+    }
+
+    var shapes = [];
+    for (var i=0; i<shapeCount; i++){
+        var s = makeShape();
+        s.y = randRange(0, H);
+        shapes.push(s);
+    }
+
+    function drawShape(s){
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.rotate(s.rotation);
+        ctx.globalAlpha = s.alpha;
+        ctx.strokeStyle = s.color;
+        ctx.fillStyle = s.color;
+        ctx.lineWidth = 1.5;
+
+        var r = s.size / 2;
+
+        if (s.type === 'square'){
+            ctx.strokeRect(-r, -r, s.size, s.size);
+        } else if (s.type === 'circle'){
+            ctx.beginPath();
+            ctx.arc(0, 0, r, 0, Math.PI*2);
+            ctx.stroke();
+        } else if (s.type === 'triangle'){
+            ctx.beginPath();
+            ctx.moveTo(0, -r);
+            ctx.lineTo(r, r);
+            ctx.lineTo(-r, r);
+            ctx.closePath();
+            ctx.stroke();
+        } else if (s.type === 'hexagon'){
+            ctx.beginPath();
+            for (var k=0; k<6; k++){
+                var angle = Math.PI/3 * k;
+                var px = r * Math.cos(angle);
+                var py = r * Math.sin(angle);
+                if (k===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+            }
+            ctx.closePath();
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    function animate(){
+        ctx.clearRect(0, 0, W, H);
+        for (var i=0; i<shapes.length; i++){
+            var s = shapes[i];
+            s.y += s.speed;
+            s.x += s.drift;
+            s.rotation += s.rotSpeed;
+
+            if (s.y - s.size > H){
+                s.y = -s.size;
+                s.x = randRange(0, W);
+            }
+            if (s.x < -40) s.x = W + 40;
+            if (s.x > W + 40) s.x = -40;
+
+            drawShape(s);
+        }
+        requestAnimationFrame(animate);
+    }
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion){
+        animate();
+    }
+})();
+</script>
 </body>
 </html>
