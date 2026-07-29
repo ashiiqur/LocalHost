@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Art Gallery</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+}
+
+body{
+    background:#111;
+    color:#fff;
+}
+
+/* Header */
+
+header{
+    text-align:center;
+    padding:40px 20px;
+}
+
+header h1{
+    font-size:48px;
+    font-weight:700;
+    margin-bottom:10px;
+    transition:.4s;
+    cursor:pointer;
+}
+
+header h1:hover{
+    color:#00ff99;
+    text-shadow:0 0 20px #00ff99;
+}
+
+header p{
+    color:#cfcfcf;
+    margin-bottom:20px;
+}
+
+.time{
+    color:#00ff99;
+    font-weight:600;
+    letter-spacing:2px;
+    font-size:15px;
+}
+
+/* Gallery */
+
+.gallery{
+    width:90%;
+    margin:40px auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:22px;
+}
+
+/* Card */
+
+.card{
+    position:relative;
+    overflow:hidden;
+    border-radius:18px;
+    cursor:pointer;
+    background:#222;
+    transition:.35s;
+}
+
+.card img{
+    width:100%;
+    height:320px;
+    object-fit:cover;
+    transition:.6s;
+}
+
+.card:hover img{
+    transform:scale(1.12);
+    filter:brightness(.65);
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 40px rgba(0,255,153,.25);
+}
+
+/* Overlay */
+
+.overlay{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    padding:25px;
+    background:linear-gradient(transparent,rgba(0,0,0,.92));
+    transform:translateY(100%);
+    transition:.45s;
+}
+
+.card:hover .overlay{
+    transform:translateY(0);
+}
+
+.overlay h3{
+    font-size:24px;
+    margin-bottom:8px;
+}
+
+.overlay p{
+    color:#ddd;
+    font-size:14px;
+}
+
+.overlay span{
+    display:inline-block;
+    margin-top:12px;
+    color:#00ff99;
+    font-size:13px;
+}
+
+/* Responsive */
+
+@media(max-width:700px){
+
+header h1{
+    font-size:34px;
+}
+
+.gallery{
+    width:95%;
+}
+
+.card img{
+    height:260px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Visual Art Gallery</h1>
+<p>Digital creations and photography.</p>
+
+<div class="time">
+GALLERY UPDATED: Jul 30, 2026 • 10:20
+</div>
+
+</header>
+
+<div class="gallery">
+
+<div class="card">
+<img src="images/photo1.jpg" alt="">
+<div class="overlay">
+<h3>Dream Logo</h3>
+<p>Creative logo design.</p>
+<span>UPLOAD: Jul 20, 2026</span>
+</div>
+</div>
+
+<div class="card">
+<img src="images/photo2.jpg" alt="">
+<div class="overlay">
+<h3>Cariowns</h3>
+<p>Portrait photography.</p>
+<span>UPLOAD: Jul 22, 2026</span>
+</div>
+</div>
+
+<div class="card">
+<img src="images/photo3.jpg" alt="">
+<div class="overlay">
+<h3>Evening Village</h3>
+<p>Nature photography.</p>
+<span>UPLOAD: Jul 24, 2026</span>
+</div>
+</div>
+
+<div class="card">
+<img src="images/photo4.jpg" alt="">
+<div class="overlay">
+<h3>Minimal Logo</h3>
+<p>Black & white branding.</p>
+<span>UPLOAD: Jul 25, 2026</span>
+</div>
+</div>
+
+<div class="card">
+<img src="images/photo5.jpg" alt="">
+<div class="overlay">
+<h3>Lake View</h3>
+<p>Peaceful landscape.</p>
+<span>UPLOAD: Jul 27, 2026</span>
+</div>
+</div>
+
+<div class="card">
+<img src="images/photo6.jpg" alt="">
+<div class="overlay">
+<h3>Sunset</h3>
+<p>Golden hour photography.</p>
+<span>UPLOAD: Jul 29, 2026</span>
+</div>
+</div>
+
+</div>
+
+</body>
+</html>
